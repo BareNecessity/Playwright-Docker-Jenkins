@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  jenkins:
+    build: .
+    container_name: jenkins-playwright
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ./playwright:/var/jenkins_home/workspace/playwright-project
+    environment:
+      JAVA_OPTS: -Djenkins.install.runSetupWizard=false
+
+volumes:
+  jenkins_home:
