@@ -50,9 +50,9 @@ export default async function globalSetup() {
 
     
     await context.storageState({ path: path.resolve(__dirname, 'biller-auth.json') });
-    console.log('✅ Saved session to biller-auth.json');
+    console.log(' Saved session to biller-auth.json');
   } catch (error) {
-    console.error('❌ Global setup failed:', error.message);
+    console.error(' Global setup failed:', error.message);
     await page.screenshot({ path: path.resolve(__dirname, 'global-setup-error.png') });
     process.exit(1);
   }
