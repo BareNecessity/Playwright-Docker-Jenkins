@@ -63,12 +63,19 @@ await Promise.all([
 
   // 1. Click the <p> tag with text 'Provider actions' to open the dropdown
 await page.getByText('Provider actions', { exact: true }).click();
-
-// 2. Wait for the toggle to appear (optional but safer)
-await page.locator('button#disable-enable-provider').waitFor({ state: 'visible', timeout: 5000 });
-
-// 3. Click the second toggle (based on your description, assuming there's more than one)
-await page.locator('button#disable-enable-provider').nth(1).click();
+const toggleSwitch = page.locator('#disable-enable-provider');
+await expect(toggleSwitch).toBeVisible({ timeout: 5000 });
+await toggleSwitch.click();
+// Try to find the "Disable" button first
+const disableButton = page.getByRole('button', { name: 'Disable' });
+if (await disableButton.isVisible()) {
+  await disableButton.click();
+} else {
+  // Fallback to the "Enable" button if "Disable" isn't visible
+  const enableButton = page.getByRole('button', { name: 'Enable' });
+  await expect(enableButton).toBeVisible({ timeout: 5000 });
+  await enableButton.click();
+}
 
 
 });

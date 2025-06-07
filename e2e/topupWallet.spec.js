@@ -22,3 +22,5 @@ await page.locator('input[name="amount"]').fill('1000', {
 await expect(page.locator('input[name="amount"]')).toHaveValue('1000', {
   timeout: 3000 // Allow time for potential form validation
 });
+
+});

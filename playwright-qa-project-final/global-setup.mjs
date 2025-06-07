@@ -1,4 +1,4 @@
-import { chromium, expect } from '@playwright/test';
+import { chromium } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default async function globalSetup() {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
   const page = await context.newPage();
 
@@ -37,25 +37,15 @@ export default async function globalSetup() {
     await context.storageState({ path: path.resolve(__dirname, 'auth.json') });
     console.log('✅ Saved session to auth.json');
 
- 
-    const moreBtn = page.getByText('More');
-await expect(moreBtn).toBeVisible();
-await moreBtn.click();
+    await page.getByRole('button', { name: 'More' }).click();
+    await page.waitForTimeout(1000);
+    await page.getByRole('menuitem', { name: 'Reseller' }).click();
+    await page.waitForURL(url => url.includes('/biller/dashboard'), { timeout: 30000 });
 
-const fourthItem = page.locator('div[role="menu"] >> p[role="menuitem"]').nth(3);
-await expect(fourthItem).toBeVisible({ timeout: 5000 });
-await fourthItem.click();
-
-
-
-    await page.waitForURL(url => url.toString().includes('/biller/dashboard'), { timeout: 30000 });
-
-    
     await context.storageState({ path: path.resolve(__dirname, 'biller-auth.json') });
-    console.log(' Saved session to biller-auth.json');
+    console.log('✅ Saved session to biller-auth.json');
   } catch (error) {
-    console.error(' Global setup failed:', error.message);
-    await page.screenshot({ path: path.resolve(__dirname, 'global-setup-error.png') });
+    console.error('❌ Global setup failed:', error.message);
     process.exit(1);
   }
 

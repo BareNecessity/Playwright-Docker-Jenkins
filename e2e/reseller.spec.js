@@ -90,8 +90,8 @@ test('Reseller Actions - Top up Wallet', async ({ page }) => {
 
   const dialog = page.locator('div[role="dialog"]');
 
-  // 1. Assert dialog is visible
-  await expect(dialog).toBeVisible();
+  const openDialog = page.locator('div[role="dialog"][data-state="open"]');
+await expect(openDialog).toBeVisible({ timeout: 5000 });
 
     await expect(dialog.getByRole('heading'))
       .toContainText('Topup Wallet');
