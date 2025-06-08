@@ -1,29 +1,21 @@
 pipeline {
-  agent {
-    docker {
-      image 'mcr.microsoft.com/playwright:v1.43.1-jammy' // Official Playwright Docker image
-      args '-u root'
-    }
-  }
+  agent any
 
   stages {
-    stage('Install Dependencies') {
+    stage('Build and Test') {
       steps {
-        sh 'npm ci'
-      }
-    }
-
-    stage('Run Tests') {
-      steps {
-        sh 'npx playwright test'
+        script {
+          sh 'docker-compose up --build --abort-on-container-exit'
+        }
       }
     }
   }
 
   post {
     always {
-      archiveArtifacts artifacts: 'test-results/**/*.*', allowEmptyArchive: true
-      junit 'test-results/**/*.xml'
+      script {
+        sh 'docker-compose down'
+      }
     }
   }
 }
